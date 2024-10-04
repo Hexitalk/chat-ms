@@ -6,14 +6,14 @@ import { CreateChatUseCase } from 'src/contexts/chat/application/use-cases';
 import { CreateChatControllerDto } from './create-chat-controller.dto';
 
 @Controller('chats')
-export class CreateHubController {
-  constructor(private readonly createHubUseCase: CreateChatUseCase) {}
+export class CreateChatController {
+  constructor(private readonly createChatUseCase: CreateChatUseCase) {}
 
   @UseGuards(RpcAuthGuard)
-  @MessagePattern({ cmd: 'chat.create-chat' })
+  @MessagePattern({ cmd: 'chats.create-chat' })
   run(@Payload() payload: NatsPayloadInterface<CreateChatControllerDto>) {
     const { data, ...config } = payload;
     const { profilesIds } = data;
-    return this.createHubUseCase.run({ profilesIds }, config);
+    return this.createChatUseCase.run({ profilesIds }, config);
   }
 }

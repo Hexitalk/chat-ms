@@ -15,6 +15,9 @@ import { ChatLineDbRepository } from './repositories/chat-line-db.repository';
 import { ChatLineRepository } from '../domain/ports/chat-line.repository';
 import { chatMongoProviders } from './mongo/providers/chat.mongo.providers';
 import { chatLineMongoProviders } from './mongo/providers/chat-line.mongo.providers';
+import { chatProfileMongoProviders } from './mongo/providers/chat-profile.mongo.providers';
+import { ChatProfileDbRepository } from './repositories/chat-profile-db.repository';
+import { ChatProfileRepository } from '../domain/ports/chat-profile.repository';
 
 @Module({
   imports: [
@@ -34,6 +37,7 @@ import { chatLineMongoProviders } from './mongo/providers/chat-line.mongo.provid
   providers: [
     ...chatMongoProviders,
     ...chatLineMongoProviders,
+    ...chatProfileMongoProviders,
     ...Object.values(useCases),
     ChatDbRepository,
     {
@@ -44,6 +48,11 @@ import { chatLineMongoProviders } from './mongo/providers/chat-line.mongo.provid
     {
       provide: ChatLineRepository,
       useExisting: ChatLineDbRepository,
+    },
+    ChatProfileDbRepository,
+    {
+      provide: ChatProfileRepository,
+      useExisting: ChatProfileDbRepository,
     },
     NatsLanguageResolver,
     {

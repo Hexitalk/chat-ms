@@ -8,7 +8,7 @@ import { ChatModel, ChatModelInterface } from '../../domain/models/chat.model';
 @Injectable()
 export class ChatDbRepository extends ChatRepository {
   constructor(
-    @Inject('CHAT_LINE_MODEL')
+    @Inject('CHAT_MODEL')
     private chatModel: Model<ChatModelInterface>,
   ) {
     super();

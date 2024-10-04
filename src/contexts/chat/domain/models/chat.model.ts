@@ -1,8 +1,10 @@
 import { ChatLineModelInterface } from './chat-line.model';
+import { ChatProfileModelInterface } from './chat-profile.model';
 
 export interface ChatModelInterface {
   id: string;
   chat_lines: ChatLineModelInterface[];
+  chats_profiles: ChatProfileModelInterface[];
   last_message_date: string;
   create_date: string;
   update_date: string;
@@ -11,6 +13,7 @@ export interface ChatModelInterface {
 export interface ChatModelInterfaceDb {
   _id: string;
   chat_lines: ChatLineModelInterface[];
+  chats_profiles: ChatProfileModelInterface[];
   last_message_date: string;
   createdAt: string;
   updatedAt: string;
@@ -23,6 +26,7 @@ export class ChatModel {
     return new ChatModel({
       id: attributes.id ?? undefined,
       chat_lines: attributes.chat_lines ?? [],
+      chats_profiles: attributes.chats_profiles ?? [],
       last_message_date: attributes.last_message_date ?? '',
       create_date: attributes.create_date ?? '',
       update_date: attributes.update_date ?? '',
@@ -33,6 +37,7 @@ export class ChatModel {
     return new ChatModel({
       id: attributes._id ?? undefined,
       chat_lines: attributes.chat_lines ?? [],
+      chats_profiles: attributes.chats_profiles ?? [],
       last_message_date: attributes.last_message_date ?? '',
       create_date: attributes.createdAt ?? '',
       update_date: attributes.updatedAt ?? '',
