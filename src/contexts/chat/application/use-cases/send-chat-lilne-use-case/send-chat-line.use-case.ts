@@ -62,22 +62,29 @@ export class SendChatLineUseCase {
       profile = resGetProfile.profile;
 
       // Check chat exists
-
       const chatDb = await this.chatRepository.findById(chatId);
       if (!chatDb) {
         throw new RpcException('error');
       }
 
       // Check profile is in the chat
-      const chatProfileDb =
-        await this.chatProfileRepository.findByChatIdAndProfileId(
-          chatId,
-          profile.id,
-        );
-      if (!chatProfileDb) {
+      const chatProfilesDb =
+        await this.chatProfileRepository.getListByChatId(chatId);
+      if (!chatProfilesDb.chatsProfiles.length) {
+        throw new RpcException('error');
+      }
+      const profilesIds: string[] = chatProfilesDb.chatsProfiles
+        .map((cp) => cp.toInterface())
+        .map((e) => e.profile_id);
+      if (
+        !chatProfilesDb.chatsProfiles.find(
+          (cp) => cp.toInterface().profile_id == profile.id,
+        )
+      ) {
         throw new RpcException('error');
       }
 
+      // Create and save new ChatLine
       const chatLineAttributes: Partial<ChatLineModelInterface> = {
         chat_id: chatId,
         profile_id: profile.id,
@@ -87,6 +94,24 @@ export class SendChatLineUseCase {
       const chatLineInsert =
         await this.chatLineRepository.insert(chatLineModel);
       chatLineResult = chatLineInsert.toInterface();
+
+      // Emit chat line to socket
+
+      const payloadEmitChatLine: NatsPayloadInterface<{
+        profilesIds: string[];
+        chatLine: ChatLineModelInterface;
+      }> = {
+        ...config,
+        data: {
+          profilesIds,
+          chatLine: chatLineResult,
+        },
+      };
+
+      await firstValueFrom(
+        this.client.send({ cmd: 'socket.chat-line-emit' }, payloadEmitChatLine),
+        { defaultValue: void 0 },
+      );
     } catch (error) {
       console.log(error);
 
