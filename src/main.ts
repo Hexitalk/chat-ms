@@ -7,6 +7,8 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('CHAT-MICROSERVICE');
 
+  logger.log(envs);
+
   logger.log(`DATABASE_URL: ${envs.databaseUrl}!`);
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
